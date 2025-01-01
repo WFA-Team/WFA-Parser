@@ -18,10 +18,10 @@ import com.wfa.parser.api.IParserOrchestrator;
  */
 
 @SpringBootApplication
-public class ParserApplication {
+public class ParserEngine {
 	
 	public static void main(String[] args) {
-		ConfigurableApplicationContext ctx = SpringApplication.run(ParserApplication.class, args);
+		ConfigurableApplicationContext ctx = SpringApplication.run(ParserEngine.class, args);
 		IParserOrchestrator bn = ctx.getBean(IParserOrchestrator.class);
 		
 		// TODO-> Implement a main loop here which polls and conducts

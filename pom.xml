@@ -16,6 +16,7 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>parser-plugin-spi</module>
+		<module>parser-engine</module>
 	</modules>
 	<url/>
 	<licenses>
