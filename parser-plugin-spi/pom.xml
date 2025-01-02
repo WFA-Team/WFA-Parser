@@ -6,6 +6,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>parser-plugin-spi</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
   <name>parser-plugin-spi</name>
   <description>SPI for a parser plugin</description>
   <packaging>jar</packaging>
