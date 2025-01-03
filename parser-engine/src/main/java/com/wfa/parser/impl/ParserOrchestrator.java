@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
+import com.wfa.middleware.utils.beans.api.IUserConfigExtractor;
 import com.wfa.parser.api.IParserOrchestrator;
 import com.wfa.parser.spi.IParserPlugin;
 import com.wfa.parser.spi.ParserPlugin;
@@ -14,18 +15,24 @@ import com.wfa.parser.spi.ParserPlugin;
 @Component
 public class ParserOrchestrator implements IParserOrchestrator {
 
-	ConfigurableApplicationContext ctx;
-	Map<String, IParserPlugin> parsers;
+	private final ConfigurableApplicationContext ctx;
+	private final Map<String, IParserPlugin> parsers;
+	private final IUserConfigExtractor configs;
 	
 	@Autowired
-	ParserOrchestrator(ConfigurableApplicationContext ctx) {
+	ParserOrchestrator(ConfigurableApplicationContext ctx, IUserConfigExtractor configs) {
 		this.ctx = ctx;
-		parsers = new HashMap<String, IParserPlugin>();	
-	}
+		this.parsers = new HashMap<String, IParserPlugin>();
+		this.configs = configs;
+		}
 
 	@Override
 	public void conductParsing() {
 		prepareBeansForParsing();
+		
+		// KDEBUG
+		configs.parseConfigFile();
+		String dir = configs.getStringConfig("input_directory_root");
 	}
 	
 	private void prepareBeansForParsing() {
