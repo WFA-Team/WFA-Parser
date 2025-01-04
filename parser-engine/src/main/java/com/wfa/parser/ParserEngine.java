@@ -17,13 +17,13 @@ import com.wfa.parser.api.IParserOrchestrator;
  * with this engine. Just implement the SPI.
  */
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.wfa"})
 public class ParserEngine {
 	
 	public static void main(String[] args) {
 		ConfigurableApplicationContext ctx = SpringApplication.run(ParserEngine.class, args);
 		IParserOrchestrator bn = ctx.getBean(IParserOrchestrator.class);
-		
+				
 		// TODO-> Implement a main loop here which polls and conducts
 		// parsing only when user asks.
 		bn.conductParsing();

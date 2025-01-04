@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.wfa.middleware.utils.beans.api.IUserConfigExtractor;
 import com.wfa.parser.api.IParserOrchestrator;
+import com.wfa.parser.engine.commons.Constants;
 import com.wfa.parser.spi.IParserPlugin;
 import com.wfa.parser.spi.ParserPlugin;
 
@@ -19,20 +20,25 @@ public class ParserOrchestrator implements IParserOrchestrator {
 	private final Map<String, IParserPlugin> parsers;
 	private final IUserConfigExtractor configs;
 	
+	private String rootDir;
+	
 	@Autowired
 	ParserOrchestrator(ConfigurableApplicationContext ctx, IUserConfigExtractor configs) {
 		this.ctx = ctx;
 		this.parsers = new HashMap<String, IParserPlugin>();
 		this.configs = configs;
 		}
-
+ 
 	@Override
 	public void conductParsing() {
+		// Below is a stepwise recipe for parsing conduction
 		prepareBeansForParsing();
-		
-		// KDEBUG
-		configs.parseConfigFile();
-		String dir = configs.getStringConfig("input_directory_root");
+		readConfigs();
+	}
+	
+	private void readConfigs() {
+		configs.parseConfigFile(); // config file = mkv.jinit
+		this.rootDir = configs.getStringConfig(Constants.Configs.ROOT_DIRECTORY);
 	}
 	
 	private void prepareBeansForParsing() {
