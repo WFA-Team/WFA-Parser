@@ -1,5 +1,14 @@
+#### Root of the directory tree, files kept inside this directory tree only are eligible for parsing ####
 input_directory_root = C:\Users\kovee\OneDrive\Documents\WFA\Application\Parser\WFA-Parser\parser-engine\input
+
+#### Infra level setting to indicate whethen file to plugin mapping should be performed by infra or plugin. By default disabled. ####
+file_mapping_plugin_decide = 1
+
+#### We can also incorporate plugin level settings in the same config file####
 sample_component_names = Sample, Smpl
 sample_component_sources = SampleSrc, SmplSrc
+sample_filename_regexes = ^Sample, ^Smpl
+
+#### It is at the disposal of plugin if it does not want to make the decision of file-plugin mapping even if the
+## general setting indicates that plugin should decide the mapping
 sample_file_mapping_enable_plugin_decide = 0
-sample_filename_regexes = ^Sample, ^Smpl 
