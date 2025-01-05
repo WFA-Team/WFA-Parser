@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.wfa.middleware.utils.DataType;
 import com.wfa.middleware.utils.Pair;
+import com.wfa.parser.spi.api.IComponent;
 
 
 /**
@@ -13,7 +14,7 @@ import com.wfa.middleware.utils.Pair;
  */
 
 public interface IParserPlugin {
-	String getComponentName();
-	String getComponentSource();
+	IComponent[] getComponents();
 	Map<String, Pair<Object, DataType>> TokenizeLine();
+	String[] getFileNameRegexes(); // to discover files that can be parsed by this plugin
 }

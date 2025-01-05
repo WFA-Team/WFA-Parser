@@ -13,6 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME) 
 @Target(ElementType.TYPE) 
 public @interface ParserPlugin {
-	String getComponentType();
+	String getId();
+	String[] getComponentTypes(); // Define always at compile-time what you can parse
 	String getVersion();
 }

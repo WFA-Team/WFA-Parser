@@ -37,7 +37,6 @@ public class ParserOrchestrator implements IParserOrchestrator {
 	}
 	
 	private void readConfigs() {
-		configs.parseConfigFile(); // config file = mkv.jinit
 		this.rootDir = configs.getStringConfig(Constants.Configs.ROOT_DIRECTORY);
 	}
 	
@@ -46,9 +45,9 @@ public class ParserOrchestrator implements IParserOrchestrator {
 		for (Object bean : parserBeans.values()) {
 			if (bean instanceof IParserPlugin) {
 				IParserPlugin plugin = (IParserPlugin)bean;
-				String componentType = bean.getClass().getAnnotation(ParserPlugin.class)
-											.getComponentType();
-				parsers.put(componentType, plugin);
+				String pluginId = bean.getClass().getAnnotation(ParserPlugin.class)
+											.getId();
+				parsers.put(pluginId, plugin);
 			}
 		}	
 	}

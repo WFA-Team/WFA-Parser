@@ -1,1 +1,5 @@
 input_directory_root = C:\Users\kovee\OneDrive\Documents\WFA\Application\Parser\WFA-Parser\parser-engine\input
+sample_component_names = Sample, Smpl
+sample_component_sources = SampleSrc, SmplSrc
+sample_file_mapping_enable_plugin_decide = 0
+sample_filename_regexes = ^Sample, ^Smpl 
