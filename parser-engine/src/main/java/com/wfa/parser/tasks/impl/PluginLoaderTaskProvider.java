@@ -46,8 +46,8 @@ public class PluginLoaderTaskProvider implements IPluginLoaderTaskProvider{
 					}
 				}
 				
-				succeed = true;
 				setResult(parsers);
+				succeed = true;
 			}
 		};
 	}
