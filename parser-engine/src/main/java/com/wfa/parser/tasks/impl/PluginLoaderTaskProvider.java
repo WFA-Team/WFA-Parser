@@ -3,6 +3,7 @@ package com.wfa.parser.tasks.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
@@ -35,19 +36,23 @@ public class PluginLoaderTaskProvider implements IPluginLoaderTaskProvider{
 			
 			@Override
 			public void execute() {
-				Map<String, IParserPlugin> parsers = new HashMap<String, IParserPlugin>();
-				Map<String, Object> parserBeans = ctx.getBeansWithAnnotation(ParserPlugin.class);
-				for (Object bean : parserBeans.values()) {
-					if (bean instanceof IParserPlugin) {
-						IParserPlugin plugin = (IParserPlugin)bean;
-						String pluginId = bean.getClass().getAnnotation(ParserPlugin.class)
-													.getId();
-						parsers.put(pluginId, plugin);
+				try {
+					Map<String, IParserPlugin> parsers = new HashMap<String, IParserPlugin>();
+					Map<String, Object> parserBeans = ctx.getBeansWithAnnotation(ParserPlugin.class);
+					for (Object bean : parserBeans.values()) {
+						if (bean instanceof IParserPlugin) {
+							IParserPlugin plugin = (IParserPlugin)bean;
+							String pluginId = bean.getClass().getAnnotation(ParserPlugin.class)
+														.getId();
+							parsers.put(pluginId, plugin);
+						}
 					}
+					
+					setResult(parsers);
+					succeed = true;
+				} catch(BeansException e) {
+					System.err.println("Problem while instantiating plugin " + e.getStackTrace().toString());
 				}
-				
-				setResult(parsers);
-				succeed = true;
 			}
 		};
 	}
