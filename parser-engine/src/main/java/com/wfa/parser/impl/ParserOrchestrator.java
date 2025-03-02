@@ -1,54 +1,55 @@
 package com.wfa.parser.impl;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.wfa.middleware.utils.beans.api.IUserConfigExtractor;
+import com.wfa.middleware.taskexecutor.api.ITaskElement;
+import com.wfa.middleware.taskexecutor.api.ITaskExecutorEngine;
+import com.wfa.middleware.utils.api.IAsyncCallback;
 import com.wfa.parser.api.IParserOrchestrator;
-import com.wfa.parser.engine.commons.Constants;
 import com.wfa.parser.spi.IParserPlugin;
-import com.wfa.parser.spi.ParserPlugin;
+import com.wfa.parser.tasks.api.IParserTaskProviderRepository;
+import com.wfa.parser.tasks.api.IPluginLoaderTaskProvider;
 
 @Component
 public class ParserOrchestrator implements IParserOrchestrator {
-
-	private final ConfigurableApplicationContext ctx;
-	private final Map<String, IParserPlugin> parsers;
-	private final IUserConfigExtractor configs;
-	
-	private String rootDir;
+	private final IParserTaskProviderRepository taskRepo;
+	private final ITaskExecutorEngine taskEngine;
+	private Map<String, IParserPlugin> parsers;
 	
 	@Autowired
-	ParserOrchestrator(ConfigurableApplicationContext ctx, IUserConfigExtractor configs) {
-		this.ctx = ctx;
-		this.parsers = new HashMap<String, IParserPlugin>();
-		this.configs = configs;
-		}
+	ParserOrchestrator(IParserTaskProviderRepository taskRepo,
+			ITaskExecutorEngine taskEngine) {
+		this.taskRepo = taskRepo;
+		this.taskEngine = taskEngine;
+	}
  
 	@Override
 	public void conductParsing() {
-		// Below is a stepwise recipe for parsing conduction
-		prepareBeansForParsing();
-		readConfigs();
+		this.taskEngine.<Map<String, IParserPlugin>>schedule(getPluginLoader())
+			.appendCallback(getCallbackForPluginsLoaded());
+		this.taskEngine.startEngine();
 	}
 	
-	private void readConfigs() {
-		this.rootDir = configs.getStringConfig(Constants.Configs.ROOT_DIRECTORY);
+	private ITaskElement<Map<String, IParserPlugin>> getPluginLoader() {
+		return this.taskRepo.<IPluginLoaderTaskProvider>getTaskProvider(IPluginLoaderTaskProvider.class).getTask();
 	}
 	
-	private void prepareBeansForParsing() {
-		Map<String, Object> parserBeans = ctx.getBeansWithAnnotation(ParserPlugin.class);
-		for (Object bean : parserBeans.values()) {
-			if (bean instanceof IParserPlugin) {
-				IParserPlugin plugin = (IParserPlugin)bean;
-				String pluginId = bean.getClass().getAnnotation(ParserPlugin.class)
-											.getId();
-				parsers.put(pluginId, plugin);
+	private IAsyncCallback<Map<String, IParserPlugin>> getCallbackForPluginsLoaded() {
+		return new IAsyncCallback<Map<String, IParserPlugin>>() {
+
+			@Override
+			public void onSuccess(Map<String, IParserPlugin> result) {
+				parsers = result;
 			}
-		}	
+
+			@Override
+			public void onFailure(Map<String, IParserPlugin> result) {
+				System.err.println("Some problem while loading parser plugins");
+			}
+			
+		};
 	}
 }
