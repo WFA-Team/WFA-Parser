@@ -11,24 +11,29 @@ import org.springframework.stereotype.Component;
 import com.wfa.middleware.taskexecutor.api.ATaskElement;
 import com.wfa.middleware.taskexecutor.api.ITaskElement;
 import com.wfa.middleware.taskexecutor.api.ITaskExecutorEngine;
+import com.wfa.middleware.utils.JoinVoid;
 import com.wfa.parser.spi.IParserPlugin;
 import com.wfa.parser.spi.ParserPlugin;
+import com.wfa.parser.tasks.api.IParserTaskResultRepo;
 import com.wfa.parser.tasks.api.IPluginLoaderTaskProvider;
 
 @Component
 public class PluginLoaderTaskProvider implements IPluginLoaderTaskProvider{
 	private final ConfigurableApplicationContext ctx;
 	private final ITaskExecutorEngine taskEngine;
+	private final IParserTaskResultRepo resultRepo;
 	
 	@Autowired
-	public PluginLoaderTaskProvider(ConfigurableApplicationContext ctx, ITaskExecutorEngine taskEngine) {
+	public PluginLoaderTaskProvider(ConfigurableApplicationContext ctx, ITaskExecutorEngine taskEngine,
+			IParserTaskResultRepo resultRepo) {
 		this.ctx = ctx;
 		this.taskEngine = taskEngine;
+		this.resultRepo = resultRepo;
 	}
 	
 	@Override
-	public ITaskElement<Map<String, IParserPlugin>> getTask() {
-		return new ATaskElement<Map<String, IParserPlugin>>(taskEngine) {
+	public ITaskElement<JoinVoid> getTask() {
+		return new ATaskElement<JoinVoid>(taskEngine) {
 			@Override
 			public void preexecute() {
 				// do nothing
@@ -48,7 +53,8 @@ public class PluginLoaderTaskProvider implements IPluginLoaderTaskProvider{
 						}
 					}
 					
-					setResult(parsers);
+					resultRepo.setPlugins(parsers);
+					setResult(JoinVoid.JoinVoidInstance);
 					succeed = true;
 				} catch(BeansException e) {
 					System.err.println("Problem while instantiating plugin " + e.getStackTrace().toString());

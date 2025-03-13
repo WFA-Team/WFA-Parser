@@ -1,15 +1,13 @@
 package com.wfa.parser.impl;
 
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.wfa.middleware.taskexecutor.api.ITaskElement;
 import com.wfa.middleware.taskexecutor.api.ITaskExecutorEngine;
+import com.wfa.middleware.utils.JoinVoid;
 import com.wfa.middleware.utils.api.IAsyncCallback;
 import com.wfa.parser.api.IParserOrchestrator;
-import com.wfa.parser.spi.IParserPlugin;
 import com.wfa.parser.tasks.api.IParserTaskProviderRepository;
 import com.wfa.parser.tasks.api.IPluginLoaderTaskProvider;
 
@@ -17,7 +15,6 @@ import com.wfa.parser.tasks.api.IPluginLoaderTaskProvider;
 public class ParserOrchestrator implements IParserOrchestrator {
 	private final IParserTaskProviderRepository taskRepo;
 	private final ITaskExecutorEngine taskEngine;
-	private Map<String, IParserPlugin> parsers;
 	
 	@Autowired
 	ParserOrchestrator(IParserTaskProviderRepository taskRepo,
@@ -28,28 +25,38 @@ public class ParserOrchestrator implements IParserOrchestrator {
  
 	@Override
 	public void conductParsing() {
-		this.taskEngine.<Map<String, IParserPlugin>>schedule(getPluginLoader())
-			.appendCallback(getCallbackForPluginsLoaded());
+		this.taskEngine.<JoinVoid>schedule(getTaskGraph())
+			.appendCallback(getCallbackForParsingDone());
+		
 		this.taskEngine.startEngine();
 	}
-	
-	private ITaskElement<Map<String, IParserPlugin>> getPluginLoader() {
-		return this.taskRepo.<IPluginLoaderTaskProvider>getTaskProvider(IPluginLoaderTaskProvider.class).getTask();
-	}
-	
-	private IAsyncCallback<Map<String, IParserPlugin>> getCallbackForPluginsLoaded() {
-		return new IAsyncCallback<Map<String, IParserPlugin>>() {
+		
+	private IAsyncCallback<JoinVoid> getCallbackForParsingDone() {
+		return new IAsyncCallback<JoinVoid>() {
 
 			@Override
-			public void onSuccess(Map<String, IParserPlugin> result) {
-				parsers = result;
+			public void onSuccess(JoinVoid result) {
+				// Should be the case for graceful exit requested by user
+				System.out.println("Parsing Done, Good Bye");
+				System.exit(0);
 			}
 
 			@Override
-			public void onFailure(Map<String, IParserPlugin> result) {
-				System.err.println("Some problem while loading parser plugins");
-			}
-			
+			public void onFailure(JoinVoid result) {
+				System.err.println("Failure during parsing..... exiting");
+				System.exit(1);
+			}			
 		};
 	}
+	
+	private ITaskElement<JoinVoid> getTaskGraph() {
+		ITaskElement<JoinVoid> root = getPluginLoader();
+		// TODO-> Create task graph with main loop as end node in a task
+		return root;
+		
+	}
+
+	private ITaskElement<JoinVoid> getPluginLoader() {
+		return this.taskRepo.<IPluginLoaderTaskProvider>getTaskProvider(IPluginLoaderTaskProvider.class).getTask();
+	}	
 }
