@@ -2,7 +2,7 @@ package com.wfa.parser.spi.impl;
 
 import com.wfa.parser.spi.api.IComponent;
 
-public class ComponentBean implements IComponent{
+public class ComponentBean implements IComponent {
 	private String componentName;
 	private String componentType;
 	private String componentSource;

@@ -3,5 +3,6 @@ package com.wfa.parser.tasks.api;
 import com.wfa.middleware.taskexecutor.api.TaskProvider;
 
 @TaskProvider
-public interface IPluginLoaderTaskProvider extends IParserTaskProvider {
+public interface IFileToPluginsMapperTaskProvider extends IParserTaskProvider {
+
 }

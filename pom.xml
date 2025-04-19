@@ -46,6 +46,13 @@
 			<artifactId>task-executor</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<!--
+		<dependency>
+			<groupId>com.wfa</groupId>
+			<artifactId>cross-talk</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		-->		
 	</dependencies>	
 	
 </project>

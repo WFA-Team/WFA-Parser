@@ -18,10 +18,10 @@ import com.wfa.parser.api.IParserOrchestrator;
  */
 
 @SpringBootApplication(scanBasePackages = {"com.wfa"})
-public class ParserEngine {
+public class ParserEngineApplication {
 	
 	public static void main(String[] args) {
-		ConfigurableApplicationContext ctx = SpringApplication.run(ParserEngine.class, args);
+		ConfigurableApplicationContext ctx = SpringApplication.run(ParserEngineApplication.class, args);
 		IParserOrchestrator bn = ctx.getBean(IParserOrchestrator.class);
 		bn.conductParsing();
 	}

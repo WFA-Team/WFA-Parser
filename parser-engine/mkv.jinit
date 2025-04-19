@@ -1,5 +1,5 @@
 #### Root of the directory tree, files kept inside this directory tree only are eligible for parsing ####
-input_directory_root = C:\Users\kovee\OneDrive\Documents\WFA\Application\Parser\WFA-Parser\parser-engine\input
+input_directory_root = C:\\Users\\kovee\\OneDrive\\Documents\\WFA\\Test
 
 #### Infra level setting to indicate whether file to plugin mapping should be performed by infra or plugin. By default disabled. ####
 file_mapping_plugin_decide = 1
