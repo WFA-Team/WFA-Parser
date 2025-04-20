@@ -33,7 +33,7 @@ public class FileVisitorTaskProvider implements IFileVisitorTaskProvider {
 			private int priority = 0;
 			
 			@Override
-			public void preexecute() { /* do nothing */}
+			public void preexecute() { /* do nothing */ }
 
 			@Override
 			public void execute() {

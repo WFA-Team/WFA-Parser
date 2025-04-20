@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.wfa.crosstalk.core.pubsub.Publisher;
 import com.wfa.middleware.taskexecutor.api.ATaskElement;
 import com.wfa.middleware.taskexecutor.api.IGroupedTaskElementProvider;
 import com.wfa.middleware.taskexecutor.api.ITaskElement;
@@ -29,14 +30,16 @@ public class FilesTokenizerTaskProvider implements IFilesTokenizerTaskProvider {
 	private final IParserTaskResultRepo taskResultRepo;
 	private final IGroupedTaskElementProvider parallelTaskMaker;
 	private final IFileReader fileReader;
+	private final Publisher publisher;
 	
 	@Autowired
 	public FilesTokenizerTaskProvider(ITaskExecutorEngine taskEngine, IParserTaskResultRepo taskResultRepo,
-			IGroupedTaskElementProvider parallelTaskMaker, IFileReader fileReader) {
+			IGroupedTaskElementProvider parallelTaskMaker, IFileReader fileReader, Publisher publisher) {
 		this.taskEngine = taskEngine;
 		this.taskResultRepo = taskResultRepo;
 		this.parallelTaskMaker = parallelTaskMaker;
 		this.fileReader = fileReader;
+		this.publisher= publisher;	
 	}
 	
 	@Override
@@ -77,7 +80,9 @@ public class FilesTokenizerTaskProvider implements IFilesTokenizerTaskProvider {
 						for (IParserPlugin plugin: plugins) {
 							if (plugin.getFileTokenizer() != null &&
 									plugin.getFileTokenizer().tokenizeLine(line, tokenizedLine)) {
-								// TODO-> publish tokenized line on bus
+								
+								if (tokenizedLine.size() != 0) // Plugin may not choose to parse some lines
+									publisher.publish(tokenizedLine);
 								return true; // Move on to next line
 							}
 						}

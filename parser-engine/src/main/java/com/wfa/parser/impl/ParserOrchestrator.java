@@ -74,8 +74,7 @@ public class ParserOrchestrator implements IParserOrchestrator {
 		
 		ITaskElement<JoinVoid> filesParsingTask = getFilesParsingTask();
 		fileToPluginsMapperTask.setNext(filesParsingTask);
-		
-		// TODO-> Create task graph with main loop as end node in a task
+
 		return root;		
 	}
 
@@ -97,7 +96,6 @@ public class ParserOrchestrator implements IParserOrchestrator {
 	
 	private ITaskElement<JoinVoid> getShutdownTask() {
 		return this.taskRepo.<IShutdownSequenceTaskProvider>getTaskProvider(IShutdownSequenceTaskProvider.class).getTask();
-		
 	}
 
 	@Override
