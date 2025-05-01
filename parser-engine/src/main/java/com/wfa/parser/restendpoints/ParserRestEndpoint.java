@@ -22,7 +22,7 @@ public class ParserRestEndpoint {
 	}
 	
 	@PostMapping("/conductParsing")
-	public ResponseEntity<Void> condunctParsing() {
+	public ResponseEntity<Void> conductParsing() {
 		orchestrator.conductParsing();
 		return ResponseEntity.accepted().build();
 	}

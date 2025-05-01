@@ -31,14 +31,8 @@ public class ParserEngine implements IParserEngine {
 				getTask(file, visitor);
 		
 		if (promise == null)
-			executeTaskOnThisThread(fileVisitorTask);
+			taskEngine.scheduleOnThisStack(fileVisitorTask);
 		else
 			taskEngine.schedule(fileVisitorTask, promise);
-	}
-	
-	private void executeTaskOnThisThread(ITaskElement<JoinVoid> fileVisitorTask) {
-			fileVisitorTask.preexecute();
-			fileVisitorTask.execute();
-			fileVisitorTask.postexecute(null);		
 	}
 }

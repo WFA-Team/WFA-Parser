@@ -24,11 +24,13 @@ public class ShutdownSequenceTaskProvider implements IShutdownSequenceTaskProvid
 		return new ATaskElement<JoinVoid>(this.taskEngine) {
 
 			@Override
-			public void preexecute() { try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}}
+			public void preexecute() { 
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 
 			@Override
 			public void execute() {
